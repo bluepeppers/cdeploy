@@ -3,7 +3,7 @@ import sys
 import logging
 import yaml
 from cassandra.cluster import Cluster
-from cqlexecutor import CQLExecutor
+from .cqlexecutor import CQLExecutor
 
 logger = logging.getLogger(__name__)
 
