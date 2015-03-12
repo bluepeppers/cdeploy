@@ -69,7 +69,7 @@ CONFIG_FILE_PATH = 'config/cassandra.yml'
 
 def main():
     if '--help' in sys.argv or '-h' in sys.argv:
-        print 'Usage: cdeploy [path/to/migrations] [--undo]'
+        print('Usage: cdeploy [path/to/migrations] [--undo]')
         return
 
     undo = False
@@ -96,7 +96,7 @@ def main():
 
 def invalid_migrations_dir(migrations_path):
     if not os.path.isdir(migrations_path):
-        print '"{0}" is not a directory'.format(migrations_path)
+        print('"{0}" is not a directory'.format(migrations_path))
         return True
     else:
         return False
@@ -105,7 +105,7 @@ def invalid_migrations_dir(migrations_path):
 def missing_config(migrations_path):
     config_path = config_file_path(migrations_path)
     if not os.path.exists(os.path.join(config_path)):
-        print 'Missing configuration file "{0}"'.format(config_path)
+        print('Missing configuration file "{0}"'.format(config_path))
         return True
     else:
         return False
