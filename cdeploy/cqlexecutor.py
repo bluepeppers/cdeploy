@@ -1,4 +1,8 @@
-class CQLExecutor:
+import logging
+
+logger = logging.getLogger(__name__)
+
+class CQLExecutor(object):
     def __init__(self):
         pass
 
@@ -18,7 +22,7 @@ class CQLExecutor:
         statements = parse_cql(migration_section_of, script)
 
         for cql_statement in statements:
-            print('  * Executing: {0}'.format(cql_statement))
+            logger.info('  * Executing: {0}'.format(cql_statement))
             session.execute(cql_statement)
 
     @staticmethod
@@ -26,7 +30,7 @@ class CQLExecutor:
         statements = parse_cql(undo_section_of, script)
 
         for cql_statement in statements:
-            print('  * Executing: {0}'.format(cql_statement))
+            logger.info('  * Executing: {0}'.format(cql_statement))
             session.execute(cql_statement)
 
     @staticmethod

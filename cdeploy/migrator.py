@@ -1,13 +1,16 @@
 import os
 import sys
+import logging
 import yaml
 from cassandra.cluster import Cluster
 from cqlexecutor import CQLExecutor
 
+logger = logging.getLogger(__name__)
 
-class Migrator:
+
+class Migrator(object):
     def __init__(self, migrations_path, session):
-        print('Reading migrations from {0}'.format(migrations_path))
+        logger.info('Reading migrations from {0}'.format(migrations_path))
         self.migrations_path = migrations_path
         self.session = session
 
@@ -32,12 +35,12 @@ class Migrator:
 
         CQLExecutor.execute_undo(self.session, self.read_migration(top_migration))
         CQLExecutor.rollback_schema_migration(self.session)
-        print('  -> Migration {0} undone ({1})\n'.format(top_version, top_migration))
+        logger.info('  -> Migration {0} undone ({1})\n'.format(top_version, top_migration))
 
     def get_top_version(self):
         result = CQLExecutor.get_top_version(self.session)
         top_version = result[0].version if len(result) > 0 else 0
-        print('Current version is {0}'.format(top_version))
+        logger.info('Current version is {0}'.format(top_version))
         return top_version
 
     def filter_migrations(self, filter_func):
@@ -56,7 +59,7 @@ class Migrator:
 
         CQLExecutor.execute(self.session, migration_script)
         CQLExecutor.add_schema_migration(self.session, version)
-        print('  -> Migration {0} applied ({1})\n'.format(version, file_name))
+        logger.info('  -> Migration {0} applied ({1})\n'.format(version, file_name))
 
     def read_migration(self, file_name):
         migration_file = open(os.path.join(self.migrations_path, file_name))
@@ -96,7 +99,7 @@ def main():
 
 def invalid_migrations_dir(migrations_path):
     if not os.path.isdir(migrations_path):
-        print('"{0}" is not a directory'.format(migrations_path))
+        logger.error('"{0}" is not a directory'.format(migrations_path))
         return True
     else:
         return False
@@ -105,7 +108,7 @@ def invalid_migrations_dir(migrations_path):
 def missing_config(migrations_path):
     config_path = config_file_path(migrations_path)
     if not os.path.exists(os.path.join(config_path)):
-        print('Missing configuration file "{0}"'.format(config_path))
+        logger.info('Missing configuration file "{0}"'.format(config_path))
         return True
     else:
         return False
